@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { AUTH_COOKIE, isValidSessionToken } from "@/lib/auth";
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const accessKey = process.env.APP_ACCESS_KEY;
 
   if (!accessKey) {
@@ -16,7 +16,7 @@ export function middleware(request: NextRequest) {
   }
 
   const token = request.cookies.get(AUTH_COOKIE)?.value;
-  if (isValidSessionToken(accessKey, token)) {
+  if (await isValidSessionToken(accessKey, token)) {
     return NextResponse.next();
   }
 
