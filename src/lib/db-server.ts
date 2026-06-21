@@ -1,37 +1,46 @@
-import { mkdir, readFile, writeFile } from "fs/promises";
-import path from "path";
-import { emptyDb, normalizeDb } from "@/lib/db";
+import { readDbFromBlob, writeDbToBlob } from "@/lib/db-blob";
+import { readDbFromFile, writeDbToFile } from "@/lib/db-file";
 import type { DbV1 } from "@/lib/types";
 
-function getDbPath(): string {
-  const configured = process.env.DATA_FILE_PATH;
-  if (configured) {
-    return path.isAbsolute(configured)
-      ? configured
-      : path.join(process.cwd(), configured);
+export type DbStorageBackend = "blob" | "file";
+
+export function getDbStorageBackend(): DbStorageBackend {
+  if (process.env.BLOB_READ_WRITE_TOKEN || process.env.VERCEL) {
+    return "blob";
   }
-  return path.join(process.cwd(), "data", "track.json");
+  return "file";
 }
 
-export async function readDbFile(): Promise<DbV1> {
-  const filePath = getDbPath();
+export function getDbStorageErrorHint(): string | null {
+  if (process.env.VERCEL && !process.env.BLOB_READ_WRITE_TOKEN) {
+    return "Pe Vercel trebuie creat un Blob store: Project → Storage → Blob → Connect.";
+  }
+  return null;
+}
 
-  try {
-    const raw = await readFile(filePath, "utf-8");
-    return normalizeDb(JSON.parse(raw));
-  } catch (error) {
-    const err = error as NodeJS.ErrnoException;
-    if (err.code === "ENOENT") {
-      const initial = emptyDb();
-      await writeDbFile(initial);
-      return initial;
+export async function readDb(): Promise<DbV1> {
+  if (getDbStorageBackend() === "blob") {
+    if (!process.env.BLOB_READ_WRITE_TOKEN) {
+      throw new Error("BLOB_READ_WRITE_TOKEN missing");
     }
-    throw error;
+    return readDbFromBlob();
   }
+  return readDbFromFile();
 }
 
-export async function writeDbFile(db: DbV1): Promise<void> {
-  const filePath = getDbPath();
-  await mkdir(path.dirname(filePath), { recursive: true });
-  await writeFile(filePath, JSON.stringify(db, null, 2), "utf-8");
+export async function writeDb(db: DbV1): Promise<void> {
+  if (getDbStorageBackend() === "blob") {
+    if (!process.env.BLOB_READ_WRITE_TOKEN) {
+      throw new Error("BLOB_READ_WRITE_TOKEN missing");
+    }
+    await writeDbToBlob(db);
+    return;
+  }
+  await writeDbToFile(db);
 }
+
+/** @deprecated use readDb */
+export const readDbFile = readDb;
+
+/** @deprecated use writeDb */
+export const writeDbFile = writeDb;
