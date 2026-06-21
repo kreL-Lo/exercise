@@ -4,7 +4,7 @@ import { Card, CardDescription, CardTitle } from "@/components/ui";
 export default function Home() {
   return (
     <div className="grid gap-6">
-      <div className="glass-card relative overflow-hidden p-8">
+      <div className="glass-card relative overflow-hidden p-5 sm:p-8">
         <div
           className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full opacity-40 blur-3xl"
           style={{
@@ -20,22 +20,22 @@ export default function Home() {
           }}
         />
 
-        <h1 className="relative text-3xl font-bold tracking-tight gradient-text">
+        <h1 className="relative text-2xl font-bold tracking-tight gradient-text sm:text-3xl">
           Tracker pentru exerciții
         </h1>
         <p className="relative mt-3 max-w-lg text-sm text-[var(--muted)]">
-          Datele sunt salvate local în browser, în{" "}
-          <span className="font-mono text-cyan-300/80">localStorage</span>.
+          Datele sunt salvate server-side în{" "}
+          <span className="font-mono text-cyan-300/80">data/track.json</span>.
           Urmărește progresul, greutatea și streak-ul tău.
         </p>
-        <div className="relative mt-6 flex flex-wrap gap-3">
-          <Link href="/session" className="btn-gradient">
+        <div className="relative mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+          <Link href="/session" className="btn-gradient w-full sm:w-auto">
             Pornește o sesiune
           </Link>
-          <Link href="/programs" className="btn-ghost">
+          <Link href="/programs" className="btn-ghost w-full sm:w-auto">
             Gestionează programe
           </Link>
-          <Link href="/stats" className="btn-ghost">
+          <Link href="/stats" className="btn-ghost w-full sm:w-auto">
             Vezi statistici
           </Link>
         </div>

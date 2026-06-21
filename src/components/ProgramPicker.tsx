@@ -32,7 +32,7 @@ export function ProgramPicker({
             key={program.id}
             type="button"
             onClick={() => onSelect(program.id)}
-            className={`program-card group relative w-full overflow-hidden rounded-2xl border p-5 text-left transition-all duration-200 ${
+            className={`program-card group relative w-full overflow-hidden rounded-2xl border p-4 text-left transition-all duration-200 sm:p-5 ${
               selected
                 ? "program-card-selected border-violet-400/60 shadow-[0_0_32px_rgba(139,92,246,0.35)]"
                 : `bg-gradient-to-br ${accent} hover:scale-[1.02] hover:shadow-[0_0_24px_rgba(139,92,246,0.15)]`
@@ -107,7 +107,7 @@ export function ProgramDetails({
   exerciseNames: Map<string, string>;
 }) {
   return (
-    <div className="rounded-2xl border border-violet-500/30 bg-violet-500/10 p-5">
+    <div className="rounded-2xl border border-violet-500/30 bg-violet-500/10 p-4 sm:p-5">
       <p className="mb-3 text-xs font-medium uppercase tracking-wider text-violet-300/80">
         Program selectat — {program.name}
       </p>
@@ -117,12 +117,12 @@ export function ProgramDetails({
           return (
             <li
               key={pe.exerciseId}
-              className="flex items-center justify-between rounded-lg bg-black/20 px-3 py-2 text-sm"
+              className="flex flex-col gap-1 rounded-lg bg-black/20 px-3 py-2 text-sm sm:flex-row sm:items-center sm:justify-between"
             >
               <span className="font-medium text-zinc-200">
                 {i + 1}. {name ?? "—"}
               </span>
-              <span className="font-mono text-cyan-300/80">
+              <span className="shrink-0 font-mono text-cyan-300/80">
                 {pe.sets} seturi × {pe.reps} reps
               </span>
             </li>

@@ -3,13 +3,14 @@
 import { useMemo, useState } from "react";
 import { ActiveSessionFlow } from "@/components/ActiveSessionFlow";
 import { ProgramDetails, ProgramPicker } from "@/components/ProgramPicker";
-import { Card, EmptyState, FieldGroup, Label, PageHeader } from "@/components/ui";import { newId } from "@/lib/ids";
+import { Card, EmptyState, ErrorBanner, FieldGroup, Label, LoadingState, PageHeader } from "@/components/ui";
+import { newId } from "@/lib/ids";
 import { createSessionEntries } from "@/lib/sessionSteps";
 import type { Session, SessionSetRecord } from "@/lib/types";
 import { useDb } from "@/lib/useDb";
 
 export default function SessionPage() {
-  const { db, update } = useDb();
+  const { db, update, loading, error } = useDb();
   const [programId, setProgramId] = useState("");
   const [weightKg, setWeightKg] = useState("");
 
@@ -115,6 +116,15 @@ export default function SessionPage() {
     [db.sessions],
   );
 
+  if (loading) {
+    return (
+      <div>
+        <PageHeader title="Sesiune" description="Se încarcă datele..." />
+        <LoadingState />
+      </div>
+    );
+  }
+
   if (activeSession) {
     return (
       <div>
@@ -122,6 +132,7 @@ export default function SessionPage() {
           title="Sesiune activă"
           description="Parcurge fiecare set pe rând — cronometrează durata și notează reps suplimentare."
         />
+        {error && <ErrorBanner message={error} />}
         <ActiveSessionFlow
           session={activeSession}
           programName={activeProgram?.name ?? "Program șters"}
@@ -142,6 +153,7 @@ export default function SessionPage() {
         title="Sesiune"
         description="Alege un program, notează greutatea și începe antrenamentul."
       />
+      {error && <ErrorBanner message={error} />}
 
       {db.programs.length === 0 ? (
         <EmptyState>
@@ -168,7 +180,7 @@ export default function SessionPage() {
             />
           )}
 
-          <Card className="max-w-lg">
+          <Card className="w-full max-w-lg">
             <FieldGroup>
               <Label htmlFor="session-weight">Greutatea ta (kg)</Label>
               <input
@@ -185,11 +197,11 @@ export default function SessionPage() {
 
             <button
               type="submit"
-              className="btn-gradient mt-4 w-full"
+              className="btn-gradient mt-4 w-full text-sm sm:text-base"
               disabled={!programId}
             >
               {programId
-                ? `Începe sesiunea — ${programMap.get(programId)?.name ?? ""}`
+                ? `Începe — ${programMap.get(programId)?.name ?? ""}`
                 : "Selectează un program"}
             </button>
           </Card>
@@ -210,10 +222,10 @@ export default function SessionPage() {
               return (
                 <div
                   key={s.id}
-                  className="glass-card flex flex-wrap items-center justify-between gap-2 p-4"
+                  className="glass-card flex flex-col gap-2 p-4 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between"
                 >
-                  <div>
-                    <p className="font-medium text-zinc-100">
+                  <div className="min-w-0">
+                    <p className="truncate font-medium text-zinc-100">
                       {prog?.name ?? "Program șters"}
                     </p>
                     <p className="text-sm text-[var(--muted)]">
@@ -226,7 +238,7 @@ export default function SessionPage() {
                       })}
                     </p>
                   </div>
-                  <div className="flex gap-4 text-sm">
+                  <div className="flex gap-4 text-sm sm:shrink-0">
                     {s.weightKg !== null && (
                       <span className="text-cyan-300/80">{s.weightKg} kg</span>
                     )}

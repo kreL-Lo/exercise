@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Card, EmptyState, FieldGroup, Label, PageHeader } from "@/components/ui";
+import { Card, EmptyState, ErrorBanner, FieldGroup, Label, LoadingState, PageHeader } from "@/components/ui";
 import { newId } from "@/lib/ids";
 import type { Program, ProgramExercise } from "@/lib/types";
 import { useDb } from "@/lib/useDb";
@@ -9,7 +9,7 @@ import { useDb } from "@/lib/useDb";
 type DraftExercise = ProgramExercise & { selected: boolean };
 
 export default function ProgramsPage() {
-  const { db, update } = useDb();
+  const { db, update, loading, error } = useDb();
   const [name, setName] = useState("");
   const [draft, setDraft] = useState<DraftExercise[]>([]);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -125,15 +125,17 @@ export default function ProgramsPage() {
         title="Programe"
         description="Creează programe de antrenament din exercițiile tale."
       />
-
-      {db.exercises.length === 0 ? (
+      {error && <ErrorBanner message={error} />}
+      {loading ? (
+        <LoadingState />
+      ) : db.exercises.length === 0 ? (
         <EmptyState>
           Mai întâi adaugă exerciții din pagina Exerciții, apoi revino aici.
         </EmptyState>
       ) : (
         <div className="grid gap-6 lg:grid-cols-2">
           <Card>
-            <div className="mb-4 flex items-center justify-between">
+            <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
               <h2 className="font-semibold text-zinc-100">
                 {editingId ? "Editează programul" : "Program nou"}
               </h2>
@@ -224,12 +226,12 @@ export default function ProgramsPage() {
                   </div>
                 </div>
 
-                <div className="flex gap-2">
-                  <button type="submit" className="btn-gradient">
+                <div className="flex flex-col gap-2 sm:flex-row">
+                  <button type="submit" className="btn-gradient w-full sm:w-auto">
                     {editingId ? "Salvează" : "Creează program"}
                   </button>
                   {editingId && (
-                    <button type="button" className="btn-ghost" onClick={resetForm}>
+                    <button type="button" className="btn-ghost w-full sm:w-auto" onClick={resetForm}>
                       Anulează
                     </button>
                   )}
@@ -238,7 +240,7 @@ export default function ProgramsPage() {
             )}
 
             {draft.length === 0 && !editingId && (
-              <button type="button" className="btn-gradient" onClick={() => initDraft()}>
+              <button type="button" className="btn-gradient w-full sm:w-auto" onClick={() => initDraft()}>
                 Creează program nou
               </button>
             )}
@@ -250,24 +252,24 @@ export default function ProgramsPage() {
             ) : (
               db.programs.map((program) => (
                 <div key={program.id} className="glass-card p-4">
-                  <div className="flex items-start justify-between gap-3">
-                    <div>
-                      <p className="font-medium text-zinc-100">{program.name}</p>
+                  <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                    <div className="min-w-0">
+                      <p className="truncate font-medium text-zinc-100">{program.name}</p>
                       <p className="mt-0.5 text-sm text-[var(--muted)]">
                         {program.exercises.length} exerciții
                       </p>
                     </div>
-                    <div className="flex gap-2">
+                    <div className="flex gap-2 sm:shrink-0">
                       <button
                         type="button"
-                        className="btn-ghost px-3 py-1.5 text-xs"
+                        className="btn-ghost flex-1 px-3 py-2 text-xs sm:flex-none sm:py-1.5"
                         onClick={() => startEdit(program)}
                       >
                         Editează
                       </button>
                       <button
                         type="button"
-                        className="rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-1.5 text-xs text-red-300 hover:bg-red-500/20"
+                        className="flex-1 rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-2 text-xs text-red-300 hover:bg-red-500/20 sm:flex-none sm:py-1.5"
                         onClick={() => handleDelete(program.id)}
                       >
                         Șterge
@@ -280,10 +282,10 @@ export default function ProgramsPage() {
                       return (
                         <li
                           key={pe.exerciseId}
-                          className="flex justify-between text-sm text-zinc-400"
+                          className="flex flex-col gap-0.5 text-sm text-zinc-400 sm:flex-row sm:justify-between"
                         >
-                          <span>{ex?.name ?? "Exercițiu șters"}</span>
-                          <span className="font-mono text-cyan-300/70">
+                          <span className="truncate">{ex?.name ?? "Exercițiu șters"}</span>
+                          <span className="shrink-0 font-mono text-cyan-300/70">
                             {pe.sets}×{pe.reps}
                           </span>
                         </li>

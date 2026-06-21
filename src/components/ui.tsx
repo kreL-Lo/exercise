@@ -8,12 +8,14 @@ export function PageHeader({
   description?: string;
 }) {
   return (
-    <div className="mb-6">
-      <h1 className="text-2xl font-semibold tracking-tight gradient-text">
+    <div className="mb-5 sm:mb-6">
+      <h1 className="text-xl font-semibold tracking-tight gradient-text sm:text-2xl">
         {title}
       </h1>
       {description && (
-        <p className="mt-1.5 text-sm text-[var(--muted)]">{description}</p>
+        <p className="mt-1.5 text-sm leading-relaxed text-[var(--muted)]">
+          {description}
+        </p>
       )}
     </div>
   );
@@ -27,7 +29,7 @@ export function Card({
   className?: string;
 }) {
   return (
-    <div className={`glass-card p-6 ${className}`}>{children}</div>
+    <div className={`glass-card p-4 sm:p-6 ${className}`}>{children}</div>
   );
 }
 
@@ -57,4 +59,20 @@ export function Label({ children, htmlFor }: { children: ReactNode; htmlFor?: st
 
 export function FieldGroup({ children }: { children: ReactNode }) {
   return <div className="flex flex-col">{children}</div>;
+}
+
+export function LoadingState({ label = "Se încarcă datele..." }: { label?: string }) {
+  return (
+    <p className="rounded-xl border border-white/10 bg-white/2 px-4 py-12 text-center text-sm text-[var(--muted)]">
+      {label}
+    </p>
+  );
+}
+
+export function ErrorBanner({ message }: { message: string }) {
+  return (
+    <p className="mb-4 rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-300">
+      {message}
+    </p>
+  );
 }

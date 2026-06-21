@@ -1,13 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { Card, EmptyState, FieldGroup, Label, PageHeader } from "@/components/ui";
+import { Card, EmptyState, ErrorBanner, FieldGroup, Label, LoadingState, PageHeader } from "@/components/ui";
 import { newId } from "@/lib/ids";
 import type { Exercise } from "@/lib/types";
 import { useDb } from "@/lib/useDb";
 
 export default function ExercisesPage() {
-  const { db, update } = useDb();
+  const { db, update, loading, error } = useDb();
   const [name, setName] = useState("");
   const [sets, setSets] = useState(3);
   const [reps, setReps] = useState(10);
@@ -76,7 +76,10 @@ export default function ExercisesPage() {
         title="Exerciții"
         description="Creează și gestionează exercițiile tale cu sets și reps implicite."
       />
-
+      {error && <ErrorBanner message={error} />}
+      {loading ? (
+        <LoadingState />
+      ) : (
       <div className="grid gap-6 lg:grid-cols-2">
         <Card>
           <h2 className="mb-4 font-semibold text-zinc-100">
@@ -120,12 +123,12 @@ export default function ExercisesPage() {
                 />
               </FieldGroup>
             </div>
-            <div className="flex gap-2">
-              <button type="submit" className="btn-gradient">
+            <div className="flex flex-col gap-2 sm:flex-row">
+              <button type="submit" className="btn-gradient w-full sm:w-auto">
                 {editingId ? "Salvează" : "Adaugă"}
               </button>
               {editingId && (
-                <button type="button" className="btn-ghost" onClick={resetForm}>
+                <button type="button" className="btn-ghost w-full sm:w-auto" onClick={resetForm}>
                   Anulează
                 </button>
               )}
@@ -140,27 +143,27 @@ export default function ExercisesPage() {
             db.exercises.map((ex) => (
               <div
                 key={ex.id}
-                className={`glass-card flex items-center justify-between p-4 ${
+                className={`glass-card flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between ${
                   editingId === ex.id ? "ring-1 ring-violet-500/50" : ""
                 }`}
               >
-                <div>
-                  <p className="font-medium text-zinc-100">{ex.name}</p>
+                <div className="min-w-0">
+                  <p className="truncate font-medium text-zinc-100">{ex.name}</p>
                   <p className="mt-0.5 text-sm text-[var(--muted)]">
                     {ex.defaultSets} sets × {ex.defaultReps} reps
                   </p>
                 </div>
-                <div className="flex gap-2">
+                <div className="flex gap-2 sm:shrink-0">
                   <button
                     type="button"
-                    className="btn-ghost px-3 py-1.5 text-xs"
+                    className="btn-ghost flex-1 px-3 py-2 text-xs sm:flex-none sm:py-1.5"
                     onClick={() => startEdit(ex)}
                   >
                     Editează
                   </button>
                   <button
                     type="button"
-                    className="rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-1.5 text-xs text-red-300 hover:bg-red-500/20"
+                    className="flex-1 rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-2 text-xs text-red-300 hover:bg-red-500/20 sm:flex-none sm:py-1.5"
                     onClick={() => handleDelete(ex.id)}
                   >
                     Șterge
@@ -171,6 +174,7 @@ export default function ExercisesPage() {
           )}
         </div>
       </div>
+      )}
     </div>
   );
 }

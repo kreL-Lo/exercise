@@ -40,7 +40,7 @@ function LoginForm() {
   }
 
   return (
-    <div className="flex min-h-[70vh] items-center justify-center">
+    <div className="flex min-h-[60vh] items-center justify-center px-1 sm:min-h-[70vh]">
       <Card className="w-full max-w-md">
         <div className="mb-6 text-center">
           <h1 className="text-2xl font-bold gradient-text">Exercise Tracker</h1>

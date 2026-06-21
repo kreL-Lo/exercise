@@ -34,6 +34,9 @@ yarn-error.log*
 .env*
 !.env.example
 
+# tracked data file (user data)
+/data/track.json
+
 # vercel
 .vercel
 

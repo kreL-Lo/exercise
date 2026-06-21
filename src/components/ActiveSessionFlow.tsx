@@ -27,7 +27,7 @@ function DeltaControl({
           type="button"
           aria-label="Scade"
           disabled={disabled}
-          className="flex h-11 w-11 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-xl font-medium text-zinc-200 transition-colors hover:border-violet-500/40 hover:bg-violet-500/15 disabled:opacity-40"
+          className="flex h-12 w-12 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-2xl font-medium text-zinc-200 transition-colors hover:border-violet-500/40 hover:bg-violet-500/15 disabled:opacity-40 sm:h-11 sm:w-11 sm:text-xl"
           onClick={() => onChange(value - 1)}
         >
           −
@@ -47,7 +47,7 @@ function DeltaControl({
           type="button"
           aria-label="Crește"
           disabled={disabled}
-          className="flex h-11 w-11 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-xl font-medium text-zinc-200 transition-colors hover:border-cyan-500/40 hover:bg-cyan-500/15 disabled:opacity-40"
+          className="flex h-12 w-12 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-2xl font-medium text-zinc-200 transition-colors hover:border-cyan-500/40 hover:bg-cyan-500/15 disabled:opacity-40 sm:h-11 sm:w-11 sm:text-xl"
           onClick={() => onChange(value + 1)}
         >
           +
@@ -126,34 +126,36 @@ export function ActiveSessionFlow({
 
   return (
     <div>
-      <div className="mb-6 flex flex-wrap items-center gap-4">
-        <div className="glass-card px-4 py-3">
-          <p className="text-xs text-[var(--muted)]">Program</p>
-          <p className="font-medium text-zinc-100">{programName}</p>
-        </div>
-        <div className="glass-card px-4 py-3">
-          <p className="text-xs text-[var(--muted)]">Progres total</p>
-          <p className="font-medium text-zinc-100">
-            Set {safeIndex + 1} / {steps.length}
-          </p>
-        </div>
-        {session.weightKg !== null && (
-          <div className="glass-card px-4 py-3">
-            <p className="text-xs text-[var(--muted)]">Greutate</p>
-            <p className="stat-value text-xl">{session.weightKg} kg</p>
+      <div className="mb-4 flex flex-col gap-3 sm:mb-6 sm:flex-row sm:flex-wrap sm:items-center sm:gap-4">
+        <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:gap-4">
+          <div className="glass-card px-3 py-2.5 sm:px-4 sm:py-3">
+            <p className="text-xs text-[var(--muted)]">Program</p>
+            <p className="truncate font-medium text-zinc-100">{programName}</p>
           </div>
-        )}
-        <div className="ml-auto flex gap-2">
-          <button type="button" className="btn-ghost" onClick={onCancel}>
+          <div className="glass-card px-3 py-2.5 sm:px-4 sm:py-3">
+            <p className="text-xs text-[var(--muted)]">Progres total</p>
+            <p className="font-medium text-zinc-100">
+              Set {safeIndex + 1} / {steps.length}
+            </p>
+          </div>
+          {session.weightKg !== null && (
+            <div className="glass-card col-span-2 px-3 py-2.5 sm:col-span-1 sm:px-4 sm:py-3">
+              <p className="text-xs text-[var(--muted)]">Greutate</p>
+              <p className="stat-value text-xl">{session.weightKg} kg</p>
+            </div>
+          )}
+        </div>
+        <div className="grid grid-cols-2 gap-2 sm:ml-auto sm:flex sm:gap-2">
+          <button type="button" className="btn-ghost w-full text-sm" onClick={onCancel}>
             Anulează
           </button>
-          <button type="button" className="btn-gradient" onClick={onEnd}>
-            Termină sesiunea
+          <button type="button" className="btn-gradient w-full text-sm" onClick={onEnd}>
+            Termină
           </button>
         </div>
       </div>
 
-      <div className="mb-4 flex flex-wrap gap-1.5">
+      <div className="scroll-x-mobile mb-4 flex gap-1.5 pb-1">
         {steps.map((s, i) => {
           const done =
             session.entries[s.entryIndex].setRecords[s.setIndex]
@@ -178,28 +180,28 @@ export function ActiveSessionFlow({
         })}
       </div>
 
-      <Card className="mx-auto max-w-lg">
-        <div className="mb-6 text-center">
+      <Card className="mx-auto w-full max-w-lg">
+        <div className="mb-5 text-center sm:mb-6">
           <p className="text-xs font-medium uppercase tracking-wider text-[var(--muted)]">
             {exerciseName}
           </p>
-          <h2 className="mt-1 text-2xl font-bold gradient-text">
+          <h2 className="mt-1 text-xl font-bold gradient-text sm:text-2xl">
             Set {step.setNumber} / {step.totalSetsInExercise}
           </h2>
           <p className="mt-2 text-sm text-[var(--muted)]">
             Țintă:{" "}
-            <span className="font-mono text-xl text-cyan-300/90">
+            <span className="font-mono text-lg text-cyan-300/90 sm:text-xl">
               {setRecord.targetReps} reps
             </span>
           </p>
         </div>
 
-        <div className="mb-8 flex flex-col items-center">
+        <div className="mb-6 flex flex-col items-center sm:mb-8">
           <p className="mb-2 text-xs font-medium uppercase tracking-wider text-[var(--muted)]">
             Durata setului
           </p>
           <div
-            className={`font-mono text-5xl font-bold tabular-nums tracking-tight ${
+            className={`font-mono text-4xl font-bold tabular-nums tracking-tight sm:text-5xl ${
               running
                 ? "gradient-text"
                 : isCompleted
@@ -277,10 +279,10 @@ export function ActiveSessionFlow({
           </p>
         </div>
 
-        <div className="mt-6 flex gap-3">
+        <div className="mt-6 flex flex-col gap-2 sm:flex-row sm:gap-3">
           <button
             type="button"
-            className="btn-ghost flex-1"
+            className="btn-ghost order-2 w-full sm:order-1 sm:flex-1"
             disabled={safeIndex === 0 || running}
             onClick={() => handleGoToStep(safeIndex - 1)}
           >
@@ -290,7 +292,7 @@ export function ActiveSessionFlow({
           {!running && !isCompleted && (
             <button
               type="button"
-              className="btn-gradient flex-1"
+              className="btn-gradient order-1 w-full sm:order-2 sm:flex-1"
               onClick={handleStartSet}
             >
               Începe setul
@@ -300,7 +302,7 @@ export function ActiveSessionFlow({
           {running && (
             <button
               type="button"
-              className="btn-gradient flex-1"
+              className="btn-gradient order-1 w-full sm:order-2 sm:flex-1"
               onClick={handleFinishSet}
             >
               Termină setul
@@ -310,7 +312,7 @@ export function ActiveSessionFlow({
           {!running && isCompleted && !isLast && (
             <button
               type="button"
-              className="btn-gradient flex-1"
+              className="btn-gradient order-1 w-full sm:order-2 sm:flex-1"
               onClick={() => {
                 setStepIndex(safeIndex + 1);
                 reset();
@@ -321,7 +323,7 @@ export function ActiveSessionFlow({
           )}
 
           {!running && isCompleted && isLast && (
-            <button type="button" className="btn-gradient flex-1" onClick={onEnd}>
+            <button type="button" className="btn-gradient order-1 w-full sm:order-2 sm:flex-1" onClick={onEnd}>
               Finalizează sesiunea
             </button>
           )}
