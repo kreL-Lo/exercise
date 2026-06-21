@@ -1,65 +1,98 @@
-import Image from "next/image";
+import Link from "next/link";
+import { Card, CardDescription, CardTitle } from "@/components/ui";
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
+    <div className="grid gap-6">
+      <div className="glass-card relative overflow-hidden p-8">
+        <div
+          className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full opacity-40 blur-3xl"
+          style={{
+            background:
+              "radial-gradient(circle, rgba(139,92,246,0.6) 0%, transparent 70%)",
+          }}
         />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+        <div
+          className="pointer-events-none absolute -bottom-12 -left-12 h-40 w-40 rounded-full opacity-30 blur-3xl"
+          style={{
+            background:
+              "radial-gradient(circle, rgba(6,182,212,0.5) 0%, transparent 70%)",
+          }}
+        />
+
+        <h1 className="relative text-3xl font-bold tracking-tight gradient-text">
+          Tracker pentru exerciții
+        </h1>
+        <p className="relative mt-3 max-w-lg text-sm text-[var(--muted)]">
+          Datele sunt salvate local în browser, în{" "}
+          <span className="font-mono text-cyan-300/80">localStorage</span>.
+          Urmărește progresul, greutatea și streak-ul tău.
+        </p>
+        <div className="relative mt-6 flex flex-wrap gap-3">
+          <Link href="/session" className="btn-gradient">
+            Pornește o sesiune
+          </Link>
+          <Link href="/programs" className="btn-ghost">
+            Gestionează programe
+          </Link>
+          <Link href="/stats" className="btn-ghost">
+            Vezi statistici
+          </Link>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+      </div>
+
+      <div className="grid gap-4 sm:grid-cols-2">
+        <Card>
+          <div className="mb-3 inline-flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-violet-500/30 to-cyan-500/20 text-sm font-bold text-violet-300">
+            1
+          </div>
+          <CardTitle>Exerciții</CardTitle>
+          <CardDescription>
+            Creează exerciții cu sets/reps implicite, editabile per program sau
+            sesiune.
+          </CardDescription>
+          <Link href="/exercises" className="link-accent mt-4 inline-flex">
+            Mergi la Exerciții
+          </Link>
+        </Card>
+
+        <Card>
+          <div className="mb-3 inline-flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-pink-500/30 to-orange-500/20 text-sm font-bold text-pink-300">
+            2
+          </div>
+          <CardTitle>Programe & sesiuni</CardTitle>
+          <CardDescription>
+            Un program este o listă de exerciții. O sesiune are start/stop,
+            program ales și greutatea ta la început.
+          </CardDescription>
+          <Link href="/session" className="link-accent mt-4 inline-flex">
+            Începe o sesiune
+          </Link>
+        </Card>
+      </div>
+
+      <div className="grid gap-4 sm:grid-cols-3">
+        {[
+          { label: "Sets / Reps", color: "from-violet-500 to-purple-600" },
+          { label: "Streak", color: "from-cyan-500 to-teal-600" },
+          { label: "Greutate", color: "from-pink-500 to-rose-600" },
+        ].map(({ label, color }) => (
+          <div
+            key={label}
+            className="glass-card flex flex-col items-center p-5 text-center"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
+            <div
+              className={`mb-2 h-1 w-12 rounded-full bg-gradient-to-r ${color}`}
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+            <span className="text-xs font-medium uppercase tracking-wider text-[var(--muted)]">
+              {label}
+            </span>
+            <span className="mt-1 text-sm text-zinc-400">
+              Grafice în Statistici
+            </span>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
