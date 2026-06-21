@@ -8,6 +8,7 @@ function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const from = searchParams.get("from") || "/";
+  const configError = searchParams.get("error") === "missing-key";
   const [key, setKey] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -63,6 +64,12 @@ function LoginForm() {
               required
             />
           </FieldGroup>
+
+          {configError && (
+            <p className="rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-sm text-amber-200">
+              APP_ACCESS_KEY nu este configurată. Adaugă cheia în .env.local.
+            </p>
+          )}
 
           {error && (
             <p className="rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-2 text-sm text-red-300">
