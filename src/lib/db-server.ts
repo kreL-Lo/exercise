@@ -5,7 +5,11 @@ import type { DbV1 } from "@/lib/types";
 export type DbStorageBackend = "blob" | "file";
 
 export function getDbStorageBackend(): DbStorageBackend {
-  if (process.env.BLOB_READ_WRITE_TOKEN || process.env.VERCEL) {
+  if (process.env.BLOB_READ_WRITE_TOKEN) {
+    return "blob";
+  }
+  // On Vercel, local filesystem is not persistent — require Blob.
+  if (process.env.VERCEL) {
     return "blob";
   }
   return "file";

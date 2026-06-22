@@ -1,4 +1,4 @@
-import { head, put } from "@vercel/blob";
+import { get, put } from "@vercel/blob";
 import { emptyDb, normalizeDb } from "@/lib/db";
 import type { DbV1 } from "@/lib/types";
 
@@ -9,19 +9,26 @@ function isBlobNotFound(error: unknown): boolean {
   const e = error as { name?: string; message?: string };
   return (
     e.name === "BlobNotFoundError" ||
-    e.message?.includes("does not exist") === true ||
-    e.message?.includes("not found") === true
+    e.message?.toLowerCase().includes("not found") === true ||
+    e.message?.toLowerCase().includes("does not exist") === true
   );
+}
+
+async function readStreamAsText(
+  stream: ReadableStream<Uint8Array>,
+): Promise<string> {
+  return new Response(stream).text();
 }
 
 export async function readDbFromBlob(): Promise<DbV1> {
   try {
-    const blob = await head(BLOB_PATHNAME);
-    const res = await fetch(blob.url);
-    if (!res.ok) {
-      throw new Error(`Blob fetch failed: ${res.status}`);
+    const result = await get(BLOB_PATHNAME, { access: "private" });
+
+    if (!result || result.statusCode !== 200 || !result.stream) {
+      throw new Error("Blob not found or empty");
     }
-    const raw = await res.text();
+
+    const raw = await readStreamAsText(result.stream);
     return normalizeDb(JSON.parse(raw));
   } catch (error) {
     if (isBlobNotFound(error)) {
