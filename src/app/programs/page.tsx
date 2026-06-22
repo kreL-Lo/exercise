@@ -190,6 +190,11 @@ export default function ProgramsPage() {
                             />
                             <span className="flex-1 font-medium text-zinc-100">
                               {ex.name}
+                              {ex.type === "weight" && ex.weightKg !== null && (
+                                <span className="ml-1 text-xs font-normal text-cyan-300/70">
+                                  · {ex.weightKg} kg
+                                </span>
+                              )}
                             </span>
                           </label>
                           {d.selected && (
@@ -287,6 +292,9 @@ export default function ProgramsPage() {
                           <span className="truncate">{ex?.name ?? "Exercițiu șters"}</span>
                           <span className="shrink-0 font-mono text-cyan-300/70">
                             {pe.sets}×{pe.reps}
+                            {ex?.type === "weight" && ex.weightKg !== null && (
+                              <span className="text-zinc-500"> · {ex.weightKg}kg</span>
+                            )}
                           </span>
                         </li>
                       );

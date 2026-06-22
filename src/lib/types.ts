@@ -1,8 +1,13 @@
 export type Id = string;
 
+export type ExerciseType = "bodyweight" | "weight";
+
 export type Exercise = {
   id: Id;
   name: string;
+  type: ExerciseType;
+  /** Greutate implicită (kg), doar pentru type === "weight" */
+  weightKg: number | null;
   defaultSets: number;
   defaultReps: number;
   createdAt: string; // ISO
