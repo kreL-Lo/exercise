@@ -8,6 +8,10 @@ function isPublicPath(pathname: string): boolean {
   return PUBLIC_PATHS.includes(pathname) || pathname.startsWith("/api/auth");
 }
 
+function isApiRoute(pathname: string): boolean {
+  return pathname.startsWith("/api/");
+}
+
 export async function middleware(request: NextRequest) {
   const accessKey = process.env.APP_ACCESS_KEY;
   const { pathname } = request.nextUrl;
@@ -29,6 +33,12 @@ export async function middleware(request: NextRequest) {
   }
 
   if (!accessKey) {
+    if (isApiRoute(pathname)) {
+      return NextResponse.json(
+        { error: "APP_ACCESS_KEY nu este configurată pe server." },
+        { status: 503 },
+      );
+    }
     const loginUrl = request.nextUrl.clone();
     loginUrl.pathname = "/login";
     loginUrl.searchParams.set("from", pathname);
@@ -38,6 +48,13 @@ export async function middleware(request: NextRequest) {
 
   if (isAuthenticated) {
     return NextResponse.next();
+  }
+
+  if (isApiRoute(pathname)) {
+    return NextResponse.json(
+      { error: "Neautentificat. Reîncearcă login-ul." },
+      { status: 401 },
+    );
   }
 
   const loginUrl = request.nextUrl.clone();

@@ -25,9 +25,16 @@ async function fetchDb(): Promise<DbV1> {
     cache: "no-store",
     credentials: "include",
   });
+
+  const contentType = res.headers.get("content-type") ?? "";
+  if (!contentType.includes("application/json")) {
+    throw new Error("Răspuns invalid de la server. Reautentifică-te.");
+  }
+
   if (!res.ok) {
     throw new Error(await parseApiError(res));
   }
+
   return res.json() as Promise<DbV1>;
 }
 
