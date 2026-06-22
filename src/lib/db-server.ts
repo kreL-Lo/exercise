@@ -4,11 +4,15 @@ import type { DbV1 } from "@/lib/types";
 
 export type DbStorageBackend = "blob" | "file";
 
+/** Blob via token (local) sau OIDC (Vercel: BLOB_STORE_ID + VERCEL_OIDC_TOKEN). */
+export function isBlobConfigured(): boolean {
+  return Boolean(process.env.BLOB_READ_WRITE_TOKEN || process.env.BLOB_STORE_ID);
+}
+
 export function getDbStorageBackend(): DbStorageBackend {
-  if (process.env.BLOB_READ_WRITE_TOKEN) {
+  if (isBlobConfigured()) {
     return "blob";
   }
-  // On Vercel, local filesystem is not persistent — require Blob.
   if (process.env.VERCEL) {
     return "blob";
   }
@@ -16,16 +20,16 @@ export function getDbStorageBackend(): DbStorageBackend {
 }
 
 export function getDbStorageErrorHint(): string | null {
-  if (process.env.VERCEL && !process.env.BLOB_READ_WRITE_TOKEN) {
-    return "Pe Vercel trebuie creat un Blob store: Project → Storage → Blob → Connect.";
+  if (process.env.VERCEL && !isBlobConfigured()) {
+    return "Conectează un Blob store: Vercel → Storage → Blob → Connect la proiect.";
   }
   return null;
 }
 
 export async function readDb(): Promise<DbV1> {
   if (getDbStorageBackend() === "blob") {
-    if (!process.env.BLOB_READ_WRITE_TOKEN) {
-      throw new Error("BLOB_READ_WRITE_TOKEN missing");
+    if (!isBlobConfigured()) {
+      throw new Error("Blob storage not configured");
     }
     return readDbFromBlob();
   }
@@ -34,8 +38,8 @@ export async function readDb(): Promise<DbV1> {
 
 export async function writeDb(db: DbV1): Promise<void> {
   if (getDbStorageBackend() === "blob") {
-    if (!process.env.BLOB_READ_WRITE_TOKEN) {
-      throw new Error("BLOB_READ_WRITE_TOKEN missing");
+    if (!isBlobConfigured()) {
+      throw new Error("Blob storage not configured");
     }
     await writeDbToBlob(db);
     return;

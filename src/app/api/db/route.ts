@@ -15,12 +15,15 @@ function dbErrorResponse(action: "read" | "write", error: unknown) {
     return NextResponse.json({ error: hint }, { status: 503 });
   }
 
+  const detail =
+    error instanceof Error ? error.message : "Eroare necunoscută";
+
   return NextResponse.json(
     {
       error:
         action === "read"
-          ? "Nu s-a putut citi fișierul de date."
-          : "Nu s-a putut salva fișierul de date.",
+          ? `Nu s-a putut citi datele: ${detail}`
+          : `Nu s-a putut salva datele: ${detail}`,
     },
     { status: 500 },
   );
